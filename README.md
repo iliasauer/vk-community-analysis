@@ -12,12 +12,12 @@ To import the folder to the database you should use the next command:
 
 ### Vector
 **Components:**
-1) How many posts were created by the user? 
-2) How many posts were liked by the user? 
-3) How many posts were commented by the user? 
-4) How many posts were reposted by the user? 
-5) How many communities were subscribed by the user? 
-6) How many followers have a user? 
+1) How many posts were created by the user?   
+2) How many posts were liked by the user?   
+3) How many posts were commented by the user?   
+4) How many posts were reposted by the user?   
+5) How many communities were subscribed by the user?   
+6) How many followers have a user?   
 
 ### Next
 Search for some similar papers about Facebook 
