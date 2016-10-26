@@ -11,7 +11,7 @@ To import the folder to the database you should use the next command:
 **Note:** Mongo server must be running at the time
 
 ### Vector
-**Components:**
+**Components:**   
 1) How many posts were created by the user?   
 2) How many posts were liked by the user?   
 3) How many posts were commented by the user?   
