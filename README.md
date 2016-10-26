@@ -18,7 +18,6 @@ To import the folder to the database you should use the next command:
 4) How many posts were reposted by the user? 
 5) How many communities were subscribed by the user? 
 6) How many followers have a user? 
-7) The user's gender (?) 
 
 ### Next
 Search for some similar papers about Facebook 
