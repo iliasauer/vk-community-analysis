@@ -4,6 +4,8 @@
 """Vectors collecting"""
 
 from pymongo import MongoClient
+from lab_util import DbHardcodeHandler as Hardcode
+
 
 ZENIT_DB_NAME = 'zenit_vk_communities'
 SPARTAK_DB_NAME = 'spartak_vk_communities'
@@ -16,7 +18,10 @@ MEMBERS_DB = CLIENT[MEMBERS_DB_NAME]
 
 POST_ID_DESIGN = "_id"
 
-for coll_name in ZENIT_DB.collection_names():
-    for post in ZENIT_DB[coll_name].find():
+counter = 0
+for coll_name in MEMBERS_DB.collection_names():
+    for post in MEMBERS_DB[coll_name].find():
         if post[POST_ID_DESIGN]:
-            print("id: %s" % post[POST_ID_DESIGN])
+            counter += 1
+
+print("Number of members: %d" % counter)
