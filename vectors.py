@@ -7,8 +7,8 @@
 class Vector(object):
     """Vector structure"""
 
-    def __init__(self, mem_id):
-        self.__id = mem_id
+    def __init__(self):
+        # self.__id = mem_id
         self.__created = 0
         self.__liked = 0
         self.__commented = 0
@@ -16,9 +16,9 @@ class Vector(object):
         self.__subscribed = 0
         self.__followed = 0
 
-    @property
-    def id(self):
-        return self.__id
+    # @property
+    # def id(self):
+    #     return self.__id
 
     @property
     def created(self):
@@ -75,7 +75,7 @@ class Vector(object):
 
 class VectorCollector(object):
     """Class to collect vectors"""
-    def __init__(self, vect_dict):
+    def __init__(self):
         self.__vect_dict = {}
 
     def put(self, mem_id, vector):

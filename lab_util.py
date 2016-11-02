@@ -4,13 +4,16 @@
 
 import re
 from pymongo import MongoClient
+from vectors import Vector
+from vectors import VectorCollector
 
+vect_collector = VectorCollector()
 
 class DbHardcodeHandler(object):
     """Class to parse some hardcode"""
 
     __COMM_COLL_NAME_PREFIX = "comm_"
-    __COMM_COLL_NAME_SUFFIX = "_wall_post"
+    __COMM_COLL_NAME_SUFFIX = "_wall_posts"
     __MEMB_COLL_NAME_PREFIX = __COMM_COLL_NAME_PREFIX
     __MEMB_COLL_NAME_SUFFIX = "_members"
 
@@ -26,7 +29,7 @@ class DbHardcodeHandler(object):
 
     @staticmethod
     def __build_coll_name(prefix, comm_id, suffix):
-        return "%s%d%s" % (prefix, comm_id, suffix)
+        return "%s%s%s" % (prefix, str(comm_id), suffix)
 
     @staticmethod
     def build_comm_coll_name(comm_id):
@@ -90,8 +93,9 @@ class DbMiner(object):
             for entry in mem_db[mem_coll_name].find():
                 if entry[DbMiner.__MEM_ID_KEY__]:
                     mem_id = entry[DbMiner.__MEM_ID_KEY__]
+                    vect_collector.put(mem_id, Vector())
                     comm_coll_name = DbHardcodeHandler.mem_coll_name_to_comm_coll_name(mem_coll_name)
-                    task(DbMiner.__MEM_ID_KEY__, mem_id, mem_coll_name, comm_coll_name)
+                    task(DbMiner.__MEM_ID_KEY__, mem_id, comm_coll_name)
                     limit -= 1
                     if limit is 0:
                         return
@@ -101,27 +105,30 @@ class DbMiner(object):
         print("%s: %s" % (descript, str(some_val)))
 
     @staticmethod
-    def run_for_coll_task(comm_coll_name, task, limit=-1):
+    def run_for_coll_task(descr, mem_id, comm_coll_name, task, limit=-1):
         db_names = [DbMiner.__ZENIT_DB_NAME, DbMiner.__SPARTAK_DB_NAME]
         coll = DbMiner.try_find_coll(db_names, comm_coll_name)
         if coll:
             for entry in coll:
-                task(entry)
+                task(mem_id, entry)
+                # task(entry)
                 limit -= 1
                 if limit is 0:
                     return
 
+    @staticmethod
+    def print_post_owner_id_for_post_task(descr, mem_id, comm_coll_name, limit=-1):
+        return DbMiner.run_for_coll_task(descr, mem_id, comm_coll_name,
+                                         DbMiner.print_post_owner_id, limit)
 
-
-
-
-    #
-    # POST_ID_DESIGN = "_id"
-    #
-    # counter = 0
-    # for coll_name in MEMBERS_DB.collection_names():
-    #     for post in MEMBERS_DB[coll_name].find():
-    #         if post[POST_ID_DESIGN]:
-    #             counter += 1
-    #
-    # print("Number of members: %d" % counter)
+    @staticmethod
+    def print_post_owner_id(mem_id, post, ):
+        post_data = post["post_data"]
+        owner_id = post_data["owner_id"]
+        if owner_id < 0:
+            owner_id = - owner_id
+        vect = vect_collector.get(mem_id)
+        if mem_id == owner_id:
+            vect.created += 1
+        print("mem id: %s; owner id: %s" % (mem_id, owner_id))
+        print("mem id %s vector: %s" % (mem_id, vect))
