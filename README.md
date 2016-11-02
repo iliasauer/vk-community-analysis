@@ -1,7 +1,10 @@
 # vk-community-analysis
 First steps to learn machines with vk communities data ;)
 
-## Current notes
+## Fresh notes
+!!! Постить в сообществе может не кто угодно, а как правило только один из администраторов
+
+## Common notes
 ### Mongo
 A dump of MongoDB is a simple folder containing .bson and .metadata files.
 To import the folder to the database you should use the next command:
