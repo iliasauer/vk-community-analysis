@@ -3,8 +3,6 @@
 
 """Vectors collecting"""
 
-from lab_util import DbMiner as miner
+from lab import db_mining as mine
 
-miner.run_for_mem_id(miner.print_post_owner_id_for_post_task, 100)
-
-
+mine.run_for_member(mine.print_post_owner_id_for_post_task)
