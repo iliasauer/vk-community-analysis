@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Lab util"""
+"""Hardcode util"""
 
 import re
 

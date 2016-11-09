@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Vectors util"""
-
+"""Vectors"""
 
 # noinspection PyAttributeOutsideInit
 class Vector(object):
@@ -16,57 +15,23 @@ class Vector(object):
         self.__subscribed = 0
         self.__followed = 0
 
-    # @property
-    # def id(self):
-    #     return self.__id
+    def inc_created(self):
+        self.__created += 1
 
-    @property
-    def created(self):
-        return self.__created
+    def inc_liked(self):
+        self.__liked += 1
 
-    @created.setter
-    def created(self, value):
-        self.__created = value
+    def inc_commented(self):
+        self.__commented += 1
 
-    @property
-    def liked(self):
-        return self.__liked
+    def inc_reposted(self):
+        self.__reposted += 1
 
-    @liked.setter
-    def liked(self, value):
-        self.__liked = value
+    def inc_subscribed(self):
+        self.__subscribed += 1
 
-    @property
-    def commented(self):
-        return self.__commented
-
-    @commented.setter
-    def commented(self, value):
-        self.__commented = value
-
-    @property
-    def reposted(self):
-        return self.__reposted
-
-    @reposted.setter
-    def reposted(self, value):
-        self.__reposted = value
-
-    @property
-    def subscribed(self):
-        return self.__subscribed
-
-    @subscribed.setter
-    def subscribed(self, value):
-        self.__subscribed = value
-
-    @property
-    def followed(self):
-        return self.__followed
-
-    @followed.setter
-    def followed(self, value):
-        self.__followed = value
+    def inc_followed(self):
+        self.__followed += 1
 
     def __str__(self):
         return "%s, %s, %s, %s, %s, %s" % (self.__created, self.__liked, self.__commented,
@@ -82,7 +47,7 @@ class VectorCollector(object):
         self.__vect_dict[mem_id] = vector
 
     def get(self, mem_id):
-        return self.__vect_dict[mem_id]
+        return self.__vect_dict.get(mem_id, 0)
 
     def __str__(self):
         return str(self.__vect_dict)

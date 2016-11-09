@@ -5,4 +5,5 @@
 
 from lab import db_mining as mine
 
-mine.run_for_member(mine.print_post_owner_id_for_post_task)
+mine.run_for_member(mine.create_post_member_task)
+# mine.run_for_member(mine.comment_post_member_task)
