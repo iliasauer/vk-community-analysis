@@ -16,7 +16,7 @@ def find_first_num(some_string):
         return match.group()
 
 
-def find_comm_id(coll_name):
+def parse_comm_id(coll_name):
     return find_first_num(coll_name)
 
 
@@ -41,10 +41,10 @@ def build_mem_coll_name(comm_id):
 
 
 def comm_coll_name_to_mem_coll_name(comm_coll_name):
-    comm_id = find_comm_id(comm_coll_name)
+    comm_id = parse_comm_id(comm_coll_name)
     return build_mem_coll_name(comm_id)
 
 
 def mem_coll_name_to_comm_coll_name(mem_coll_name):
-    comm_id = find_comm_id(mem_coll_name)
+    comm_id = parse_comm_id(mem_coll_name)
     return build_comm_coll_name(comm_id)

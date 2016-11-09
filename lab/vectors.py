@@ -2,6 +2,22 @@
 
 """Vectors"""
 
+def inc_commented_prop(vect):
+    vect.inc_commented()
+
+
+def inc_created_prop(vect):
+    vect.inc_created()
+
+
+def inc_subscribed_prop(vect):
+    vect.inc_subscribed()
+
+
+def inc_followed_prop(vect):
+    vect.inc_followed()
+
+
 # noinspection PyAttributeOutsideInit
 class Vector(object):
     """Vector structure"""
