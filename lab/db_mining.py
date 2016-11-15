@@ -60,25 +60,26 @@ def run_for_mem(task, run_type="id", limit=-1):
         for member in mem_db[mem_coll_name].find():  # for each member in collection
             if member[__MEM_ID_KEY]:  # if member has id
                 mem_id = member[__MEM_ID_KEY]  # get id
-                mem_id = 49470237 # get id
+                # mem_id = 49470237 # get id TODO USE IT FOR CHECKING
                 if not bool(vect_collector.get(mem_id)):
                     vect_collector.put(mem_id, Vector())  # create new vector for member
-                comm_coll_name = hc.mem_coll_name_to_comm_coll_name(mem_coll_name)
                 # determine the name of a community the member from
                 if run_type == "entity":
                     __handle_mem_entity(task, mem_id, member)
                 else:
-                    __handle_mem_id(task, mem_id, comm_coll_name)
+                    __handle_mem_id(task, mem_id, mem_coll_name)
                 # run task with the member id and the community name
                 limit -= 1
                 if limit is 0:
                     return
 
+
 def __handle_mem_id(task, mem_id, mem_coll_name):
     comm_coll_name = hc.mem_coll_name_to_comm_coll_name(mem_coll_name)
     task(mem_id, comm_coll_name)
 
-def __handle_mem_entity(task, mem_id, member_entity):
+
+def __handle_mem_entity(task, mem_id, member_entity, ):
     task(mem_id, member_entity)
 
 
@@ -86,7 +87,7 @@ def run_for_comm(mem_id, member, task, limit=-1):
     db_names = [__ZENIT_DB_NAME, __SPARTAK_DB_NAME]
     for db_name in db_names:
         db = create_connection(db_name)
-        for comm_coll_name in db:
+        for comm_coll_name in db.collection_names():
             task(mem_id, member, comm_coll_name)
             limit -= 1
             if limit is 0:
@@ -145,8 +146,8 @@ def comment_post_member_task(mem_id, comm_coll_name, limit=-1):
     return run_for_post(mem_id, comm_coll_name, comment_post_task, limit)
 
 
-def subscribed_comm_member_task(mem_id, comm_coll_name, limit=-1):
-    return run_for_comm(mem_id, comm_coll_name, comment_post_task, limit)
+def subscribed_comm_member_task(mem_id, member, limit=-1):
+    return run_for_comm(mem_id, member, subscribed_comm_task, limit)
 
 
 ###############################################################
@@ -154,15 +155,10 @@ def subscribed_comm_member_task(mem_id, comm_coll_name, limit=-1):
 ###############################################################
 
 def subscribed_comm_task(mem_id, member, comm_coll_name):
-    subscribs = member[__MEM_SUBSCRIB_KEY]
-    comm_id = hc.parse_comm_id(comm_coll_name)
-    update_vector_with_passive_component(mem_id, subscribs, comm_id, vctrs.inc_subscribed_prop)
-
-
-# def followed_comm_task(mem_id, member, comm_coll_name):
-#     follows = member[__MEM_FOLLOW_KEY]
-#     comm_id = hc.parse_comm_id(comm_coll_name)
-#     update_vector_with_passive_component(mem_id, follows, comm_id, vctrs.inc_subscribed_prop)
+    subscribs = member.get(__MEM_SUBSCRIB_KEY, None)
+    if subscribs:
+        comm_id = hc.parse_comm_id(comm_coll_name)
+        update_vector_with_passive_component(mem_id, subscribs, comm_id, vctrs.inc_subscribed_prop)
 
 ###############################################################
 # post tasks

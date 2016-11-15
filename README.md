@@ -17,6 +17,18 @@ First steps to learn machines with vk communities data ;)
     Если есть, то увеличивать счётчик.
 - Можно узнать на какое количество других пользователей (фанатских сообществ) подписан (именно подписан, т.к. информации о друзьях нет) пользователь  
 
+## PyCharm Mongo Explorer
+### Example
+Filter:  
+    {"id": 1006}  
+Projection:  
+    {
+        "_id": 0,
+        "date": 1
+    }  
+Sort:  
+    {"date": -1}
+
 ## Common notes
 ### Mongo
 A dump of MongoDB is a simple folder containing .bson and .metadata files.
