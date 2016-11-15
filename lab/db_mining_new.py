@@ -36,15 +36,16 @@ def create_connection(db_name):
 # db task iterators
 ###############################################################
 
-def run_for_user(task):
-    """Iterate users and run the task with the user id and user instance for each user"""
+def run_for_user(post_task, user_task):
+    """Iterate users and run the post_task with the user id and user instance for each user"""
     user_db = create_connection(__USER_DB_NAME)
     for user in user_db[__USER_COLLECTION_NAME].find():
         if user[__USER_ID_KEY]:
             user_id = user[__USER_ID_KEY]
             if user_id not in vect_collector:
                 vect_collector[user_id] = Vector()
-            task(user_id, user)
+            post_task(user_id)
+            user_task(user_id, user)
 
 
 def run_for_post(user_id, task):
@@ -60,35 +61,11 @@ def run_for_post(user_id, task):
 
 
 def vectors():
-    vect_collector.values()
+    return vect_collector.values()
 
 
-def collect_all():
-    collect_likes()
-    collect_reposts()
-    collect_comments()
-    collect_subscriptions()
-    collect_followers()
-
-
-def collect_likes():
-    run_for_user(like_post_user_task)
-
-
-def collect_reposts():
-    run_for_user(repost_post_user_task)
-
-
-def collect_comments():
-    run_for_user(comment_post_user_task)
-
-
-def collect_subscriptions():
-    run_for_user(subscribed_user_task)
-
-
-def collect_followers():
-    run_for_user(followed_user_task)
+def collect_vect_components():
+    run_for_user(common_post_task, common_user_task)
 
 
 ###############################################################
@@ -96,52 +73,52 @@ def collect_followers():
 ###############################################################
 
 
-def like_post_user_task(user_id):
-    return run_for_post(user_id, __like_post_task)
+def common_post_user_task(user_id):
+    return run_for_post(user_id, common_post_task)
 
 
-def repost_post_user_task(user_id):
-    return run_for_post(user_id, __repost_post_task)
+def common_user_task(user_id, user):
+    vect = vect_collector[user_id]
+    __subscribed_user_task(user, vect)
+    __followed_user_task(user, vect)
 
 
-def comment_post_user_task(user_id):
-    return run_for_post(user_id, __comment_post_task)
-
-
-def subscribed_user_task(user_id, user):
+def __subscribed_user_task(user, vector):
     subscribs = user[__USER_SUBSCRIB_KEY]
-    vect = vect_collector[user_id]
-    vect.subscribed = len(subscribs)
+    vector.subscribed = len(subscribs)
 
 
-def followed_user_task(user_id, user):
+def __followed_user_task(user, vector):
     follows = user[__USER_FOLLOW_KEY]
-    vect = vect_collector[user_id]
-    vect.followed = len(follows)
+    vector.followed = len(follows)
 
 
 ###############################################################
 # post tasks
 ###############################################################
 
-def __like_post_task(user_id, post):
+def __like_post_task(user_id, post, vector):
     likes = post[__POST_LIKE_KEY]
     if user_id in likes:
-        vect = vect_collector[user_id]
-        vect.inc_liked()
+        vector.inc_liked()
 
 
-def __repost_post_task(user_id, post):
+def __repost_post_task(user_id, post, vector):
     reposts = post[__POST_REPOST_KEY]
     if user_id in reposts:
-        vect = vect_collector[user_id]
-        vect.inc_reposted()
+        vector.inc_reposted()
 
 
-def __comment_post_task(user_id, post):
+def __comment_post_task(user_id, post, vector):
     comments = post[__POST_COMMENT_KEY]
     for comment in comments:
         src_id = comment[__POST_COMMENT_SRC_ID_KEY]
-        if src_id == user_id:
-            vect = vect_collector[user_id]
-            vect.inc_commented()
+        if user_id == src_id:
+            vector.inc_commented()
+
+
+def common_post_task(user_id, post):
+        vect = vect_collector[user_id]
+        __like_post_task(user_id, post, vect)
+        __repost_post_task(user_id, post, vect)
+        __comment_post_task(user_id, post, vect)
