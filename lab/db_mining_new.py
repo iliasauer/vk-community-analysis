@@ -46,6 +46,7 @@ def run_for_user(post_task, user_task):
                 vect_collector[user_id] = Vector()
             post_task(user_id)
             user_task(user_id, user)
+            print(vect_collector[user_id])
 
 
 def run_for_post(user_id, task):
@@ -65,7 +66,7 @@ def vectors():
 
 
 def collect_vect_components():
-    run_for_user(common_post_task, common_user_task)
+    run_for_user(common_post_user_task, common_user_task)
 
 
 ###############################################################
@@ -84,13 +85,15 @@ def common_user_task(user_id, user):
 
 
 def __subscribed_user_task(user, vector):
-    subscribs = user[__USER_SUBSCRIB_KEY]
-    vector.subscribed = len(subscribs)
+    subscribs = user.get(__USER_SUBSCRIB_KEY, None)
+    if subscribs:
+        vector.subscribed = len(subscribs)
 
 
 def __followed_user_task(user, vector):
-    follows = user[__USER_FOLLOW_KEY]
-    vector.followed = len(follows)
+    follows = user.get(__USER_FOLLOW_KEY, None)
+    if follows:
+        vector.followed = len(follows)
 
 
 ###############################################################
@@ -98,23 +101,26 @@ def __followed_user_task(user, vector):
 ###############################################################
 
 def __like_post_task(user_id, post, vector):
-    likes = post[__POST_LIKE_KEY]
-    if user_id in likes:
-        vector.inc_liked()
+    likes = post.get(__POST_LIKE_KEY, None)
+    if likes:
+        if user_id in likes:
+            vector.inc_liked()
 
 
 def __repost_post_task(user_id, post, vector):
-    reposts = post[__POST_REPOST_KEY]
-    if user_id in reposts:
-        vector.inc_reposted()
+    reposts = post.get(__POST_REPOST_KEY, None)
+    if reposts:
+        if user_id in reposts:
+            vector.inc_reposted()
 
 
 def __comment_post_task(user_id, post, vector):
-    comments = post[__POST_COMMENT_KEY]
-    for comment in comments:
-        src_id = comment[__POST_COMMENT_SRC_ID_KEY]
-        if user_id == src_id:
-            vector.inc_commented()
+    comments = post.get(__POST_COMMENT_KEY, None)
+    if comments:
+        for comment in comments:
+            src_id = comment[__POST_COMMENT_SRC_ID_KEY]
+            if user_id == src_id:
+                vector.inc_commented()
 
 
 def common_post_task(user_id, post):
