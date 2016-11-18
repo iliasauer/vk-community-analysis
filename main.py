@@ -6,7 +6,7 @@
 from lab import db_mining_new as new_mine
 
 new_mine.collect_vect_components()
-vectors = new_mine.vectors()
+new_mine.write_vectors()
 
 
 

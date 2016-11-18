@@ -61,7 +61,7 @@ class Vector(object):
         self.__subscribed = subscribed
 
     def __str__(self):
-        return "%s, %s, %s, %s, %s" % (self.__liked, self.__commented, self.__reposted,
+        return "%s, %s, %s, %s, %s" % (self.__liked, self.__reposted, self.__commented,
                                        self.__subscribed, self.__followed)
 
 
